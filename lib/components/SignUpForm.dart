@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:drivx/components/Button.dart';
 import 'package:drivx/components/FormError.dart';
 import 'package:drivx/components/Icon.dart';
@@ -173,8 +174,13 @@ class _SignUpFormState extends State<SignUpForm> {
               FormError(errors: errors),
               SizedBox(height: 20),
               Button(text:"Sign up",
-                  press: (){
-                    if (_formKey.currentState.validate()){
+                  press: () async{
+                    var connectResult = Connectivity().checkConnectivity();
+                    if(connectResult != ConnectivityResult.mobile && connectResult != ConnectivityResult.wifi) {
+                      print("No internet Connection");
+                    }
+                      if (_formKey.currentState.validate())
+                    {
                       _formKey.currentState.save();
                       registerUser();
                     }
