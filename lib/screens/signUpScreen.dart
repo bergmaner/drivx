@@ -1,18 +1,15 @@
-import 'package:drivx/components/NoAccountText.dart';
-import 'package:drivx/components/SignInForm.dart';
+import 'package:drivx/components/HaveAccountText.dart';
 import 'package:drivx/components/SignUpForm.dart';
-import 'package:drivx/components/SocialCard.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatelessWidget {
-  static String routeName = "/sign_up";
+  static String routeName = "/signUp";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child:Text("Sign Up")
-        ),
+        centerTitle: true,
+          title: Text("Sign Up",),
       ),
       body: Container(
         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -21,7 +18,7 @@ class SignUpScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child:Column(
               children:[
-                SizedBox(height: 20),
+
                 Text(
                   "Register",
                   style: TextStyle(
@@ -38,7 +35,7 @@ class SignUpScreen extends StatelessWidget {
                 SizedBox(height: 40),
                 SignUpForm(),
                 SizedBox(height: 35),
-                NoAccountText(),
+                HaveAccountText(),
                 SizedBox(height: 20)
               ],
             ),

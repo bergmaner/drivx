@@ -1,8 +1,8 @@
-import 'package:drivx/screens/signUpScreen.dart';
+import 'package:drivx/screens/signInScreen.dart';
 import 'package:flutter/material.dart';
 
-class NoAccountText extends StatelessWidget {
-  const NoAccountText({
+class HaveAccountText extends StatelessWidget {
+  const HaveAccountText({
     Key key,
   }) : super(key: key);
 
@@ -12,13 +12,13 @@ class NoAccountText extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Don’t have an account? ",
+          "Do you have an account? ",
           style: TextStyle(fontSize: 16),
         ),
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, SignUpScreen.routeName),
+          onTap: () => Navigator.pushNamed(context, SignInScreen.routeName),
           child: Text(
-            "Sign Up",
+            "Sign In",
             style: TextStyle(
                 fontSize: 16,
                 color: Color(0xfff00000)),
