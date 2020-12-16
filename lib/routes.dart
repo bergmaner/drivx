@@ -1,3 +1,4 @@
+import 'package:drivx/screens/forgotPasswordScreen.dart';
 import 'package:drivx/screens/mainScreen.dart';
 import 'package:drivx/screens/signInScreen.dart';
 import 'package:drivx/screens/signUpScreen.dart';
@@ -8,5 +9,6 @@ import 'package:flutter/widgets.dart';
 final Map<String, WidgetBuilder> routes = {
   SignInScreen.routeName: (context) => SignInScreen(),
   SignUpScreen.routeName: (context) => SignUpScreen(),
-  MainScreen.routeName: (context) => MainScreen()
+  MainScreen.routeName: (context) => MainScreen(),
+  ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
 };

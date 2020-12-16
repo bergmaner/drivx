@@ -1,7 +1,14 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:drivx/components/Button.dart';
 import 'package:drivx/components/FormError.dart';
 import 'package:drivx/components/Icon.dart';
+import 'package:drivx/components/ProgressDialog.dart';
+import 'package:drivx/screens/forgotPasswordScreen.dart';
+import 'package:drivx/screens/mainScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:drivx/constants.dart";
 
@@ -16,6 +23,33 @@ class _SignInFormState extends State<SignInForm> {
   bool remember = false;
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void login() async{
+
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => ProgressDialog(status: "Logging you ...")
+    );
+
+    final User user = (
+        await _auth.signInWithEmailAndPassword(email: email, password: password).catchError((err){
+          Navigator.pop(context);
+          PlatformException thisErr = err;
+          print('error: ${thisErr.message}');
+        })).user;
+
+      if(user != null){
+        DatabaseReference userRef = FirebaseDatabase.instance.reference().child('users/${user.uid}');
+        userRef.once().then((DataSnapshot snapshot) => {
+          if(snapshot.value != null){
+            Navigator.pushNamedAndRemoveUntil(context, MainScreen.routeName,(route) => false),
+          }
+        });
+      }
+
+  }
 
   void addError({String error}) {
     if (!errors.contains(error))
@@ -110,8 +144,9 @@ class _SignInFormState extends State<SignInForm> {
               Text("Remember me"),
               Spacer(),
               GestureDetector(
-                child: Text(
-                  "Forgot Password",
+                onTap: () => Navigator.pushNamed(
+                    context, ForgotPasswordScreen.routeName),
+                  child: Text("Forgot Password",
                   style: TextStyle(decoration: TextDecoration.underline),
                 ),
               )
@@ -121,9 +156,14 @@ class _SignInFormState extends State<SignInForm> {
           FormError(errors: errors),
           SizedBox(height: 20),
           Button(text:"Sign in",
-              press: (){
+              press: () async {
+                var connectResult = Connectivity().checkConnectivity();
+                if(connectResult != ConnectivityResult.mobile && connectResult != ConnectivityResult.wifi) {
+                  print("No internet Connection");
+                }
             if (_formKey.currentState.validate()){
               _formKey.currentState.save();
+              login();
             }
           })
         ]

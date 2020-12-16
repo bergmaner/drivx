@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:drivx/components/Button.dart';
 import 'package:drivx/components/FormError.dart';
 import 'package:drivx/components/Icon.dart';
+import 'package:drivx/components/ProgressDialog.dart';
 import 'package:drivx/screens/mainScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -39,9 +40,11 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void registerUser() async{
-    print('Password:${password}');
-    print('email:${email}');
-
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => ProgressDialog(status: "Registering you ...")
+    );
     final User user = (
         await _auth.createUserWithEmailAndPassword(email: email, password: password).catchError((err){
           PlatformException thisErr = err;
@@ -56,7 +59,7 @@ class _SignUpFormState extends State<SignUpForm> {
      "phoneNumber": phoneNumber
    };
    userRef.set(userMap);
-   Navigator.pushNamed(context, MainScreen.routeName);
+   Navigator.pushNamedAndRemoveUntil(context, MainScreen.routeName,(route) => false);
  }}
 
   @override
@@ -130,6 +133,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   if (value.isEmpty) {
                     addError(error: phoneNumberNullError);
                     return "";
+                  } else if (!phoneValidatorRegExp.hasMatch(value)) {
+                    addError(error: invalidPhoneNumberError);
+                    return "";
                   }
                   return null;
                 },
@@ -177,7 +183,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   press: () async{
                     var connectResult = Connectivity().checkConnectivity();
                     if(connectResult != ConnectivityResult.mobile && connectResult != ConnectivityResult.wifi) {
-                      print("No internet Connection");
+                      print(connectResult);
                     }
                       if (_formKey.currentState.validate())
                     {
