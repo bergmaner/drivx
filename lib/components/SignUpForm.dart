@@ -116,7 +116,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: "Email",
                     hintText: "Enter your email",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon:CustomIcon(svgIcon:"assets/icons/mail.svg")
+                    suffixIcon:CustomIcon(svgIcon:"assets/icons/mail.svg", height: 30,)
                 ),
 
               ),
@@ -143,7 +143,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: "Phone Number",
                     hintText: "Enter your phone number",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon:CustomIcon(svgIcon:"assets/icons/phone.svg")
+                    suffixIcon:CustomIcon(svgIcon:"assets/icons/phone.svg", height: 30)
                 ),
               ),
               SizedBox(height: 20),
@@ -173,7 +173,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: "Password",
                     hintText: "Enter your password",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon:CustomIcon(svgIcon:"assets/icons/lock.svg")
+                    suffixIcon:CustomIcon(svgIcon:"assets/icons/lock.svg", height: 30)
                 ),
               ),
               SizedBox(height: 20),

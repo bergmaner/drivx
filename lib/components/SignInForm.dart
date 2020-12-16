@@ -25,32 +25,6 @@ class _SignInFormState extends State<SignInForm> {
   final List<String> errors = [];
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void login() async{
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => ProgressDialog(status: "Logging you ...")
-    );
-
-    final User user = (
-        await _auth.signInWithEmailAndPassword(email: email, password: password).catchError((err){
-          Navigator.pop(context);
-          PlatformException thisErr = err;
-          print('error: ${thisErr.message}');
-        })).user;
-
-      if(user != null){
-        DatabaseReference userRef = FirebaseDatabase.instance.reference().child('users/${user.uid}');
-        userRef.once().then((DataSnapshot snapshot) => {
-          if(snapshot.value != null){
-            Navigator.pushNamedAndRemoveUntil(context, MainScreen.routeName,(route) => false),
-          }
-        });
-      }
-
-  }
-
   void addError({String error}) {
     if (!errors.contains(error))
       setState(() {
@@ -63,6 +37,31 @@ class _SignInFormState extends State<SignInForm> {
       setState(() {
         errors.remove(error);
       });
+  }
+
+  void login() async{
+
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => ProgressDialog(status: "Logging you ...")
+    );
+
+    final User user = (
+        await _auth.signInWithEmailAndPassword(email: email, password: password).catchError((err){
+          Navigator.pop(context);
+          addError(error:"Email or password doesn't match");
+        })).user;
+
+      if(user != null){
+        DatabaseReference userRef = FirebaseDatabase.instance.reference().child('users/${user.uid}');
+        userRef.once().then((DataSnapshot snapshot) => {
+          if(snapshot.value != null){
+            Navigator.pushNamedAndRemoveUntil(context, MainScreen.routeName,(route) => false),
+          }
+        });
+      }
+
   }
 
   @override
@@ -96,7 +95,7 @@ class _SignInFormState extends State<SignInForm> {
                 labelText: "Email",
                 hintText: "Enter your email",
               floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon:CustomIcon(svgIcon:"assets/icons/mail.svg")
+                suffixIcon:CustomIcon(svgIcon:"assets/icons/mail.svg", height: 30)
             ),
 
           ),
@@ -116,9 +115,6 @@ class _SignInFormState extends State<SignInForm> {
               if (value.isEmpty) {
                 addError(error: passNullError);
                 return "";
-              } else if (value.length < 8) {
-                addError(error: shortPassError);
-                return "";
               }
               return null;
             },
@@ -126,7 +122,7 @@ class _SignInFormState extends State<SignInForm> {
                 labelText: "Password",
                 hintText: "Enter your password",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon:CustomIcon(svgIcon:"assets/icons/lock.svg")
+                suffixIcon:CustomIcon(svgIcon:"assets/icons/lock.svg",height:30)
             ),
           ),
           SizedBox(height: 20),

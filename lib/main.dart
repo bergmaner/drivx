@@ -1,6 +1,6 @@
 import 'package:drivx/routes.dart';
+import 'package:drivx/screens/mainScreen.dart';
 import "package:drivx/screens/signInScreen.dart";
-import 'package:drivx/screens/signUpScreen.dart';
 import 'package:drivx/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme(),
-      initialRoute: SignInScreen.routeName,
+      initialRoute: MainScreen.routeName,
       routes: routes,
     );
   }
