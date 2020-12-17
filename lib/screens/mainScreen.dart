@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:drivx/components/HorizontalDivider.dart';
+import 'package:drivx/components/MenuNav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:drivx/components/Icon.dart';
@@ -11,18 +12,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController mapController;
+
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Stack(
         children: <Widget>[
           GoogleMap(
+            padding: EdgeInsets.only(bottom:345),
             mapType: MapType.normal,
             myLocationButtonEnabled: true,
             initialCameraPosition: _kGooglePlex,
@@ -32,6 +39,24 @@ class _MainScreenState extends State<MainScreen> {
 
             },
           ),
+          Positioned(
+            top: 34,
+            child:RawMaterialButton(
+              enableFeedback: false,
+              onPressed: () {
+                scaffoldKey.currentState.openDrawer();
+              },
+              elevation: 2.0,
+              fillColor: Colors.white,
+              child: Icon(
+                Icons.menu,
+                color: Colors.red,
+                size: 25.0,
+              ),
+              padding: EdgeInsets.all(10.0),
+              shape: CircleBorder(),
+            )
+            ),
           Positioned(
             left: 0,
             right: 0,
@@ -137,7 +162,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
           )
         ],
-      )
+      ),
+      drawer:MenuNav()
     );
   }
 }
