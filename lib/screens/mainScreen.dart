@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
+import 'package:drivx/helpers/helperMethods.dart';
+import 'package:drivx/helpers/requestHelper.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:drivx/components/Icon.dart';
 
@@ -16,6 +19,19 @@ class _MainScreenState extends State<MainScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController mapController;
+  var geolocator = Geolocator();
+  Position currentPosition;
+
+  void setCurrentPosition() async {
+    Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPosition = position;
+    LatLng pos = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition = new CameraPosition(target: pos, zoom:14);
+    mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    String address = await HelperMethods.findCoordinateAddress(position);
+    print('address: ${address}');
+  }
+
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -29,15 +45,20 @@ class _MainScreenState extends State<MainScreen> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            padding: EdgeInsets.only(bottom:345),
             mapType: MapType.normal,
             myLocationButtonEnabled: true,
             initialCameraPosition: _kGooglePlex,
+            myLocationEnabled: true,
+            zoomControlsEnabled: false,
+            zoomGesturesEnabled: false,
+            padding: EdgeInsets.only(bottom: 350.0,),
             onMapCreated: (GoogleMapController controller){
               _controller.complete(controller);
               mapController = controller;
 
+              setCurrentPosition();
             },
+
           ),
           Positioned(
             top: 34,

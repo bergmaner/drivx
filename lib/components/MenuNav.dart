@@ -25,11 +25,12 @@ class _MenuNavState extends State<MenuNav> {
                 children:<Widget>[
                   CustomIcon(svgIcon: "assets/icons/avatar.svg",height: 80),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children:<Widget>[
-                      Text("kolokokok", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text("kolo", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),textAlign: TextAlign.left,),
                       SizedBox(height: 5),
-                      Text("View Profile")
+                      Text("View Profile", textAlign: TextAlign.left,)
                     ]
                   )
                 ]
