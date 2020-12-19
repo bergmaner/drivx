@@ -1,9 +1,11 @@
+import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/routes.dart';
 import 'package:drivx/screens/mainScreen.dart';
 import "package:drivx/screens/signInScreen.dart";
 import 'package:drivx/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
 
 import 'components/Button.dart';
@@ -35,10 +37,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme(),
-      initialRoute: MainScreen.routeName,
-      routes: routes,
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        theme: theme(),
+        initialRoute: MainScreen.routeName,
+        routes: routes,
+      ),
     );
   }
 }

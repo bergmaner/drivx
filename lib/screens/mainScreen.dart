@@ -3,10 +3,12 @@ import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
 import 'package:drivx/helpers/helperMethods.dart';
 import 'package:drivx/helpers/requestHelper.dart';
+import 'package:drivx/provider/AppData.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:drivx/components/Icon.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   static String routeName = "/mainScreen";
@@ -28,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition = new CameraPosition(target: pos, zoom:14);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    String address = await HelperMethods.findCoordinateAddress(position);
+    String address = await HelperMethods.findCoordinateAddress(position, context);
     print('address: ${address}');
   }
 
@@ -51,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
             myLocationEnabled: true,
             zoomControlsEnabled: false,
             zoomGesturesEnabled: false,
-            padding: EdgeInsets.only(bottom: 350.0,),
+            padding: EdgeInsets.only(bottom: 345.0,),
             onMapCreated: (GoogleMapController controller){
               _controller.complete(controller);
               mapController = controller;
@@ -146,9 +148,14 @@ class _MainScreenState extends State<MainScreen> {
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text("Add home",style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                  Provider.of<AppData>(context).pickupAddress != null ?
+                                  Provider.of<AppData>(context).pickupAddress.placeAddress :
+                                  "Add address",
+                                  style: TextStyle(fontWeight: FontWeight.bold)
+                              ),
                               SizedBox(height:3),
-                              Text("Your home address: ", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
+                              Text("Your home address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
                             ]
                           )
                         ]
@@ -169,7 +176,7 @@ class _MainScreenState extends State<MainScreen> {
                                 children: <Widget>[
                                   Text("Add Work",style: TextStyle(fontWeight: FontWeight.bold)),
                                   SizedBox(height:3),
-                                  Text("Your work address: ", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
+                                  Text("Your work address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
                                 ]
                             ),
                           ]
