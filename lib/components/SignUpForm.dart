@@ -87,7 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: "Full Name",
                     hintText: "Enter your full name",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon:CustomIcon(svgIcon:"assets/icons/name.svg")
+                    suffixIcon:CustomIcon(svgIcon:"assets/icons/name.svg", height: 30)
                 ),
               ),
               SizedBox(height: 20),

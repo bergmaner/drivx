@@ -4,6 +4,8 @@ import 'package:drivx/components/MenuNav.dart';
 import 'package:drivx/helpers/helperMethods.dart';
 import 'package:drivx/helpers/requestHelper.dart';
 import 'package:drivx/provider/AppData.dart';
+import 'package:drivx/screens/searchScreen.dart';
+import 'package:drivx/screens/signInScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -114,29 +116,34 @@ class _MainScreenState extends State<MainScreen> {
                         style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)
                     ),
                     SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5.0,
-                            spreadRadius: 0.5,
-                            offset: Offset(0.7,0.7)
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal:22.0),
-                        child: Row(
-                          children: <Widget>[
-                            CustomIcon(svgIcon: "assets/icons/search.svg", height: 20),
-                            SizedBox(width: 10),
-                            Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold))
-                          ]
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, SearchScreen.routeName);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5.0,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.7,0.7)
+                            ),
+                          ],
                         ),
-                      )
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal:22.0),
+                          child: Row(
+                            children: <Widget>[
+                              CustomIcon(svgIcon: "assets/icons/search.svg", height: 20),
+                              SizedBox(width: 10),
+                              Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold))
+                            ]
+                          ),
+                        )
+                      ),
                     ),
                     SizedBox(height:20),
                     Padding(
