@@ -2,10 +2,8 @@ import 'dart:async';
 import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
 import 'package:drivx/helpers/helperMethods.dart';
-import 'package:drivx/helpers/requestHelper.dart';
 import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/screens/searchScreen.dart';
-import 'package:drivx/screens/signInScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -32,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition = new CameraPosition(target: pos, zoom:14);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    String address = await HelperMethods.findCoordinateAddress(position, context);
+    String address = await HelperMethods.findCoordinateAddress(position, context); 
     print('address: ${address}');
   }
 
@@ -139,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
                             children: <Widget>[
                               CustomIcon(svgIcon: "assets/icons/search.svg", height: 20),
                               SizedBox(width: 10),
-                              Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold))
+                              Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13))
                             ]
                           ),
                         )
@@ -159,7 +157,7 @@ class _MainScreenState extends State<MainScreen> {
                                   Provider.of<AppData>(context).pickupAddress != null ?
                                   Provider.of<AppData>(context).pickupAddress.placeAddress :
                                   "Add address",
-                                  style: TextStyle(fontWeight: FontWeight.bold)
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)
                               ),
                               SizedBox(height:3),
                               Text("Your home address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
@@ -181,7 +179,7 @@ class _MainScreenState extends State<MainScreen> {
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Add Work",style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text("Add Work",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                   SizedBox(height:3),
                                   Text("Your work address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
                                 ]

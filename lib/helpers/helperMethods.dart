@@ -17,13 +17,14 @@ class HelperMethods{
     var response = await RequestHelper.getRequest(url);
     if(response != "failure"){
 
-      address = response['results'][0]['formatted_address'];
+      address = '${response['results'][0]['address_components'][2]['long_name']} ${response['results'][0]['address_components'][1]['long_name']} ${response['results'][0]['address_components'][0]['long_name']}';
       Address pickupAddress = Address();
       pickupAddress.latitude = position.latitude;
       pickupAddress.longitude = position.longitude;
       pickupAddress.placeAddress = address;
 
       Provider.of<AppData>(context, listen: false).updateAddress(pickupAddress);
+      print('long: ${position.longitude}, lat: ${position.latitude}');
     }
     else return ":(((((";
 

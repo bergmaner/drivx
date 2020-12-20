@@ -1,5 +1,9 @@
 import 'package:drivx/components/Icon.dart';
+import 'package:drivx/constants.dart';
+import 'package:drivx/helpers/requestHelper.dart';
+import 'package:drivx/provider/AppData.dart';
 import "package:flutter/material.dart";
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   static String routeName = "/searchScreen";
@@ -8,8 +12,39 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  var pickupController = TextEditingController();
+  var destinationController = TextEditingController();
+  var focus = FocusNode();
+  bool focused = false;
+
+  void setFocus(){
+    if(!focused){
+      FocusScope.of(context).requestFocus(focus);
+      focused = true;
+    }
+
+  }
+
+  void searchPlace(String placeName) async {
+    if(placeName.length > 1){
+      String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=123254251&components=country:pl';
+      var response = await RequestHelper.getRequest(url);
+      if(response == "failure"){
+        print("ffff");
+        return;
+      }
+      print(response);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    setFocus();
+
+    String address =  Provider.of<AppData>(context)?.pickupAddress?.placeAddress ?? "";
+    pickupController.text = address;
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -64,6 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Padding(
                             padding:  EdgeInsets.all(2.0),
                             child: TextField(
+                             controller: pickupController,
                               decoration: InputDecoration(
                                   hintText: 'Pickup location',
                                   fillColor: Color(0xFFe2e2e2),
@@ -95,8 +131,13 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Padding(
                             padding:  EdgeInsets.all(2.0),
                             child: TextField(
+                              onChanged: (value){
+                                searchPlace(value);
+                              },
+                              controller: destinationController,
+                              focusNode: focus,
                               decoration: InputDecoration(
-                                  hintText: 'Where to?',
+                                  hintText: 'Where?',
                                   fillColor: Color(0xFFe2e2e2),
                                   filled: true,
                                   border: InputBorder.none,

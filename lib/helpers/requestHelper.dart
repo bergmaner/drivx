@@ -10,9 +10,11 @@ class RequestHelper{
         var decodedData = jsonDecode(data);
         return decodedData;
       }
-      else return "failure";
+      else{
+        return "failure";
+      }
     }
-    catch (err) {
+    catch(err) {
       return "failure";
     }
   }
