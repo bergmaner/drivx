@@ -23,7 +23,7 @@ class HelperMethods{
       pickupAddress.longitude = position.longitude;
       pickupAddress.placeAddress = address;
 
-      Provider.of<AppData>(context, listen: false).updateAddress(pickupAddress);
+      Provider.of<AppData>(context, listen: false).updatePickupAddress(pickupAddress);
       print('long: ${position.longitude}, lat: ${position.latitude}');
     }
     else return ":(((((";
