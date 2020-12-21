@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
                             children: <Widget>[
                               CustomIcon(svgIcon: "assets/icons/search.svg", height: 20),
                               SizedBox(width: 10),
-                              Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13))
+                              Text("Search Destination",style: TextStyle(fontWeight: FontWeight.bold))
                             ]
                           ),
                         )
@@ -157,7 +157,9 @@ class _MainScreenState extends State<MainScreen> {
                                   Provider.of<AppData>(context).pickupAddress != null ?
                                   Provider.of<AppData>(context).pickupAddress.placeAddress :
                                   "Add address",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontWeight: FontWeight.bold,)
                               ),
                               SizedBox(height:3),
                               Text("Your home address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
@@ -179,7 +181,7 @@ class _MainScreenState extends State<MainScreen> {
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Add Work",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                  Text("Add Work",style: TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis,),
                                   SizedBox(height:3),
                                   Text("Your work address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
                                 ]

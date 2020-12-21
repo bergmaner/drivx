@@ -1,6 +1,9 @@
+import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/Icon.dart';
+import 'package:drivx/components/PredictionSquare.dart';
 import 'package:drivx/constants.dart';
 import 'package:drivx/helpers/requestHelper.dart';
+import 'package:drivx/models/prediction.dart';
 import 'package:drivx/provider/AppData.dart';
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
@@ -26,6 +29,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   }
 
+  List<Prediction> searchedResultsList = [];
+
   void searchPlace(String placeName) async {
     if(placeName.length > 1){
       String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=123254251&components=country:pl';
@@ -34,7 +39,16 @@ class _SearchScreenState extends State<SearchScreen> {
         print("ffff");
         return;
       }
-      print(response);
+      if(response['status'] == "OK"){
+        print("wwwwwwwwww");
+        var predictionJson = response['predictions'];
+        var results = (predictionJson as List).map((e) => Prediction.fromJson(e)).toList();
+        print(results);
+        setState(() {
+          searchedResultsList = results;
+        });
+
+      }
     }
   }
 
@@ -149,13 +163,27 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ]
             )
             )
-          )
+          ),
+          (searchedResultsList.length > 0) ?
+          ListView.separated(
+            padding: EdgeInsets.all(0),
+              itemBuilder: (context,index){
+                return PredictionSquare(
+                  prediction: searchedResultsList[index],
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) => HorizontalDivider(),
+              itemCount: searchedResultsList.length,
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics()
+          ) :
+          Container(),
         ]
       )
     );
