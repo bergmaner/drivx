@@ -36,11 +36,9 @@ class _SearchScreenState extends State<SearchScreen> {
       String url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=123254251&components=country:pl';
       var response = await RequestHelper.getRequest(url);
       if(response == "failure"){
-        print("ffff");
         return;
       }
       if(response['status'] == "OK"){
-        print("wwwwwwwwww");
         var predictionJson = response['predictions'];
         var results = (predictionJson as List).map((e) => Prediction.fromJson(e)).toList();
         print(results);

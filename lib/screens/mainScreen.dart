@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
+import 'package:drivx/components/ProgressDialog.dart';
 import 'package:drivx/helpers/helperMethods.dart';
+import 'package:drivx/models/directionDetails.dart';
 import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/screens/searchScreen.dart';
 import 'package:flutter/material.dart';
@@ -115,8 +117,13 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     SizedBox(height: 20),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.pushNamed(context, SearchScreen.routeName);
+                      onTap: () async{
+                        var response = await Navigator.pushNamed(context, SearchScreen.routeName);
+
+                        if (response == "getDirection") {
+                          print("kkkk");
+                          await getDirection();
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -200,5 +207,26 @@ class _MainScreenState extends State<MainScreen> {
       ),
       drawer:MenuNav()
     );
+  }
+
+  Future<void> getDirection() async{
+    var pickup = Provider.of<AppData>(context, listen: false).pickupAddress;
+    var destination = Provider.of<AppData>(context, listen: false).destinationAddress;
+
+    var pickupLatLng = LatLng(pickup.latitude, pickup.longitude);
+    var destinationLatLng = LatLng(destination.latitude, destination.longitude);
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => ProgressDialog(status: "Please wait..."),
+    );
+
+    DirectionDetails directionDetails = await HelperMethods.getDirectionDetails(pickupLatLng, destinationLatLng);
+
+    Navigator.pop(context);
+
+    print(directionDetails.encodedPoints);
+
   }
 }

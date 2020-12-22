@@ -33,13 +33,13 @@ class HelperMethods{
     return address;
   }
   static Future<DirectionDetails> getDirectionDetails(LatLng start, LatLng end) async{
+    print("dddd");
     String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&mode=driving&key=$mapKey';
     var response = await RequestHelper.getRequest(url);
-
+    print('start: ${start} end: ${end}');
     if(response == "failure"){
       return null;
     }
-    if(response['status'] == "OK"){
         DirectionDetails directionDetails = DirectionDetails();
 
         directionDetails.durationText = response["routes"][0]["legs"][0]["duration"]["text"];
@@ -49,6 +49,6 @@ class HelperMethods{
         directionDetails.encodedPoints = response["routes"][0]["overview_polyline"]["points"];
 
         return directionDetails;
-    }
+
   }
 }

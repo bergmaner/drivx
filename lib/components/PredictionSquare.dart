@@ -36,10 +36,12 @@ class PredictionSquare extends StatelessWidget {
       place.placeName = response['result']['name'];
       place.placeId = placeId;
       place.latitude = response["result"]['geometry']['location']['lat'];
-      place.longitude = response["result"]['geometry']['location']['long'];
+      place.longitude = response["result"]['geometry']['location']['lng'];
 
       Provider.of<AppData>(context,listen: false).updateDestinationAddress(place);
       print(place.placeName);
+
+      Navigator.pop(context, "getDirection");
     }
   }
 
