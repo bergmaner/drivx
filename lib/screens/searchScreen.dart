@@ -58,7 +58,8 @@ class _SearchScreenState extends State<SearchScreen> {
     String address =  Provider.of<AppData>(context)?.pickupAddress?.placeAddress ?? "";
     pickupController.text = address;
     return Scaffold(
-      body: Column(
+      body:
+      Column(
         children: <Widget>[
           Container(
             height: 260,
@@ -101,7 +102,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       CustomIcon(svgIcon: "assets/icons/location.svg", height: 30),
 
                       SizedBox(width: 18,),
-
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -169,7 +169,8 @@ class _SearchScreenState extends State<SearchScreen> {
             )
           ),
           (searchedResultsList.length > 0) ?
-          ListView.separated(
+          Expanded(
+            child:ListView.separated(
             padding: EdgeInsets.all(0),
               itemBuilder: (context,index){
                 return PredictionSquare(
@@ -180,7 +181,8 @@ class _SearchScreenState extends State<SearchScreen> {
               itemCount: searchedResultsList.length,
               shrinkWrap: true,
               physics: ClampingScrollPhysics()
-          ) :
+          )
+          ):
           Container(),
         ]
       )

@@ -7,6 +7,7 @@ import 'package:drivx/models/directionDetails.dart';
 import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/screens/searchScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:drivx/components/Icon.dart';
@@ -23,8 +24,14 @@ class _MainScreenState extends State<MainScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController mapController;
+
   var geolocator = Geolocator();
   Position currentPosition;
+
+  List<LatLng> polylineCoords = [];
+  Set<Polyline> _polylines = {};
+  Set<Circle> _circles = {};
+  Set<Marker> _markers = {};
 
   void setCurrentPosition() async {
     Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -54,7 +61,10 @@ class _MainScreenState extends State<MainScreen> {
             initialCameraPosition: _kGooglePlex,
             myLocationEnabled: true,
             zoomControlsEnabled: false,
-            zoomGesturesEnabled: false,
+            zoomGesturesEnabled: true,
+            polylines: _polylines,
+            circles: _circles,
+            markers: _markers,
             padding: EdgeInsets.only(bottom: 345.0,),
             onMapCreated: (GoogleMapController controller){
               _controller.complete(controller);
@@ -157,10 +167,11 @@ class _MainScreenState extends State<MainScreen> {
                         children: <Widget>[
                           CustomIcon(svgIcon: "assets/icons/home.svg", height: 20),
                           SizedBox(width: 12),
-                          Column(
+                      Expanded(
+                          child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
+                             Text(
                                   Provider.of<AppData>(context).pickupAddress != null ?
                                   Provider.of<AppData>(context).pickupAddress.placeAddress :
                                   "Add address",
@@ -172,6 +183,7 @@ class _MainScreenState extends State<MainScreen> {
                               Text("Your home address", style: TextStyle(fontSize: 11, color: Color(0xFFadadad)))
                             ]
                           )
+                      )
                         ]
                       ),
                     ),
@@ -226,7 +238,93 @@ class _MainScreenState extends State<MainScreen> {
 
     Navigator.pop(context);
 
-    print(directionDetails.encodedPoints);
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> results = polylinePoints.decodePolyline(directionDetails.encodedPoints);
 
+    polylineCoords.clear();
+
+    if(results.isNotEmpty){
+      results.forEach((PointLatLng points) {
+        polylineCoords.add(LatLng(points.latitude,points.longitude));
+      });
+    }
+
+    _polylines.clear();
+
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: PolylineId("polyid"),
+        color: Color(0xfff00000),
+        points: polylineCoords,
+        jointType: JointType.round,
+        width: 4,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+      _polylines.add(polyline);
+    });
+
+    LatLngBounds bounds;
+
+    if(pickupLatLng.latitude > destinationLatLng.latitude && pickupLatLng.longitude > destinationLatLng.longitude){
+      bounds = LatLngBounds(southwest: destinationLatLng, northeast: pickupLatLng);
+    }
+    else if(pickupLatLng.longitude > destinationLatLng.longitude){
+      bounds = LatLngBounds(
+          southwest: LatLng(pickupLatLng.latitude , destinationLatLng.longitude),
+          northeast: LatLng(destinationLatLng.latitude, pickup.longitude));
+    }
+    else if(pickupLatLng.latitude > destinationLatLng.latitude){
+    bounds = LatLngBounds(
+    southwest: LatLng(destinationLatLng.latitude, pickupLatLng.longitude),
+    northeast: LatLng(pickupLatLng.latitude, destinationLatLng.longitude),
+    );
+    }
+    else{
+    bounds = LatLngBounds(southwest: pickupLatLng, northeast: destinationLatLng);
+    }
+
+    mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
+
+    Marker pickupMarker = Marker(
+      markerId: MarkerId("pickup"),
+      position: pickupLatLng,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: pickup.placeName, snippet: "My Location")
+    );
+    Marker destinationMarker = Marker(
+        markerId: MarkerId("destination"),
+        position: destinationLatLng,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        infoWindow: InfoWindow(title: destination.placeName, snippet: "My Destination")
+    );
+
+    setState(() {
+      _markers.add(pickupMarker);
+      _markers.add(destinationMarker);
+    });
+
+    Circle pickupCircle = Circle(
+      circleId: CircleId("pickup"),
+      strokeColor: Colors.red,
+      strokeWidth: 3,
+      radius: 12,
+      center: pickupLatLng,
+      fillColor: Colors.blue
+    );
+    Circle destinationCircle = Circle(
+        circleId: CircleId("destination"),
+        strokeColor: Colors.red,
+        strokeWidth: 3,
+        radius: 12,
+        center: pickupLatLng,
+        fillColor: Colors.blue
+    );
+
+    setState(() {
+      _circles.add(pickupCircle);
+      _circles.add(destinationCircle);
+    });
   }
 }
