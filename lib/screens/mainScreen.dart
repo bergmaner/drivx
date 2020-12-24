@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:drivx/constants.dart';
 import 'package:drivx/components/Icon.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Position currentPosition;
   double rideDetailsHeight = 0;
   double searchContainerHeight = 340;
+  bool isOpen = false;
   List<LatLng> polylineCoords = [];
   Set<Polyline> _polylines = {};
   Set<Circle> _circles = {};
@@ -50,13 +52,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     setState(() {
       searchContainerHeight = 0;
       rideDetailsHeight = 300;
+      isOpen = true;
     });
   }
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +65,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           GoogleMap(
             mapType: MapType.normal,
             myLocationButtonEnabled: true,
-            initialCameraPosition: _kGooglePlex,
+            initialCameraPosition: googlePlex,
             myLocationEnabled: true,
             zoomControlsEnabled: false,
             zoomGesturesEnabled: true,
@@ -88,11 +86,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             child:RawMaterialButton(
               enableFeedback: false,
               onPressed: () {
+                (isOpen)?
+                resetApp():
                 scaffoldKey.currentState.openDrawer();
               },
               elevation: 2.0,
               fillColor: Colors.white,
               child: Icon(
+                (isOpen)?
+                Icons.arrow_back :
                 Icons.menu,
                 color: Colors.red,
                 size: 25.0,
@@ -433,4 +435,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       _circles.add(destinationCircle);
     });
   }
+  resetApp(){
+
+    setState(() {
+
+      polylineCoords.clear();
+      _polylines.clear();
+      _markers.clear();
+      _circles.clear();
+      rideDetailsHeight = 0;
+      searchContainerHeight = 340;
+      isOpen = false;
+
+    });
+
+    setCurrentPosition();
+
+  }
+
 }
