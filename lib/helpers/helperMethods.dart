@@ -48,6 +48,16 @@ class HelperMethods{
         directionDetails.encodedPoints = response["routes"][0]["overview_polyline"]["points"];
 
         return directionDetails;
-
   }
+
+  static int calculatePrices (DirectionDetails details){
+
+    double basePrice = 3;
+    double distancePrice = (details.distanceValue / 1000) * 0.3;
+    double timePrice = (details.durationValue / 60) * 0.2;
+    double totalPrice = basePrice + distancePrice + timePrice;
+
+    return totalPrice.truncate();
+  }
+
 }
