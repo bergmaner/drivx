@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drivx/components/Button.dart';
 import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
 import 'package:drivx/components/ProgressDialog.dart';
@@ -214,7 +215,91 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               )
             ),
-          )
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 15.0, // soften the shadow
+                      spreadRadius: 0.5, //extend the shadow
+                      offset: Offset(
+                        0.7, // Move to right 10  horizontally
+                        0.7, // Move to bottom 10 Vertically
+                      ),
+                    )
+                  ],
+
+                ),
+                height: 0,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 18),
+                  child: Column(
+                    children: <Widget>[
+
+                      Container(
+                        width: double.infinity,
+                        color: Color(0xFFe3fded),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: <Widget>[
+                              CustomIcon(svgIcon: "assets/icons/taxi.svg", height: 30),
+                              SizedBox(width: 16,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('Taxi', style: TextStyle(fontSize: 18, fontFamily: 'Brand-Bold'),),
+                                  Text('13km', style: TextStyle(fontSize: 16, color: Color(0xFF918D8D)),)
+
+                                ],
+                              ),
+                              Expanded(child: Container()),
+                              Text( '15 PLN', style: TextStyle(fontSize: 18, fontFamily: 'Brand-Bold'),),
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 22,),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: <Widget>[
+                            Column(
+                                children: <Widget>[
+                              SizedBox(height:8),
+                              CustomIcon(svgIcon:"assets/icons/money.svg", height: 30),
+                            ]
+                            ),
+                            SizedBox(width: 16,),
+                            Text('Cash'),
+                            SizedBox(width: 5,),
+                            Icon(Icons.keyboard_arrow_down, color: Color(0xFF918D8D), size: 16,),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 22,),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Button(text: "Request", press: (){})
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
       drawer:MenuNav()
