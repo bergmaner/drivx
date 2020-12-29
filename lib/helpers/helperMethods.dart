@@ -3,7 +3,10 @@ import 'package:drivx/constants.dart';
 import 'package:drivx/helpers/requestHelper.dart';
 import 'package:drivx/models/addresModel.dart';
 import 'package:drivx/models/directionDetails.dart';
+import 'package:drivx/models/user.dart';
 import 'package:drivx/provider/AppData.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:provider/provider.dart";
@@ -49,7 +52,6 @@ class HelperMethods{
 
         return directionDetails;
   }
-
   static int calculatePrices (DirectionDetails details){
 
     double basePrice = 3;
@@ -58,6 +60,17 @@ class HelperMethods{
     double totalPrice = basePrice + distancePrice + timePrice;
 
     return totalPrice.truncate();
+  }
+  static void getCurrentUserInfo() async{
+    String userId = currentUser.uid;
+    DatabaseReference userRef = FirebaseDatabase.instance.reference().child('users/$userId');
+
+    userRef.once().then((DataSnapshot snapshot) =>{
+      if(snapshot.value != null){
+        currentUserInfo = CurrentUser.fromSnapshot(snapshot),
+        print('User: ${currentUserInfo.fullName}'),
+      }
+    });
   }
 
 }
