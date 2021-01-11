@@ -1,3 +1,4 @@
+import 'package:drivx/constants.dart';
 import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/routes.dart';
 import 'package:drivx/screens/mainScreen.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppData(),
       child: MaterialApp(
         theme: theme(),
-        initialRoute: SignInScreen.routeName,
+        initialRoute:  (currentUser != null ? MainScreen.routeName : SignInScreen.routeName),
         routes: routes,
       ),
     );

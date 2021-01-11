@@ -3,12 +3,15 @@ import 'package:drivx/components/Button.dart';
 import 'package:drivx/components/HorizontalDivider.dart';
 import 'package:drivx/components/MenuNav.dart';
 import 'package:drivx/components/ProgressDialog.dart';
+import 'package:drivx/helpers/fireHeper.dart';
 import 'package:drivx/helpers/helperMethods.dart';
 import 'package:drivx/models/directionDetails.dart';
+import 'package:drivx/models/nearbydriver.dart';
 import 'package:drivx/provider/AppData.dart';
 import 'package:drivx/screens/searchScreen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -47,8 +50,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition = new CameraPosition(target: pos, zoom:14);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    String address = await HelperMethods.findCoordinateAddress(position, context); 
-    print('address: ${address}');
+    geofireListener();
   }
 
   void showDetailsContainer()async{
@@ -408,8 +410,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
-
-
                     ],
                   ),
                 ),
@@ -533,71 +533,107 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       _circles.add(destinationCircle);
     });
   }
-  void showRequestContainer(){
-    setState(() {
 
-      rideDetailsHeight = 0;
-      requestContainerHeight = 200;
-      isOpen = false;
+      void showRequestContainer(){
+        setState(() {
 
-    });
+          rideDetailsHeight = 0;
+          requestContainerHeight = 200;
+          isOpen = false;
 
-    createRequest();
+        });
 
-  }
+        createRequest();
 
-  void createRequest() async {
-    rideRequestRef = FirebaseDatabase.instance.reference().child("rideRequest").push();
-    var pickup = Provider.of<AppData>(context, listen:false).pickupAddress;
-    var destination = Provider.of<AppData>(context, listen:false).destinationAddress;
+      }
+      void createRequest() async {
+        rideRequestRef = FirebaseDatabase.instance.reference().child("rideRequest").push();
+        var pickup = Provider.of<AppData>(context, listen:false).pickupAddress;
+        var destination = Provider.of<AppData>(context, listen:false).destinationAddress;
 
-    Map pickupMap = {
-      "latitude": pickup.latitude.toString(),
-      "longitude": pickup.longitude.toString()
-    };
+        Map pickupMap = {
+          "latitude": pickup.latitude.toString(),
+          "longitude": pickup.longitude.toString()
+        };
 
-    Map destinationMap = {
-      "latitude": destination.latitude.toString(),
-      "longitude": destination.longitude.toString()
-    };
+        Map destinationMap = {
+          "latitude": destination.latitude.toString(),
+          "longitude": destination.longitude.toString()
+        };
 
-    Map rideMap = {
-      "created_at": DateTime.now().toString(),
-      "rider_name": currentUserInfo.fullName,
-      "rider_phone": currentUserInfo.phone,
-      "pickup_address": pickup.placeName,
-      "destination_address": destination.placeName,
-      "location": pickupMap,
-      "destination": destinationMap,
-      "payment_method": "card",
-      "driver_id": "waiting",
+        Map rideMap = {
+          "created_at": DateTime.now().toString(),
+          "rider_name": currentUserInfo.fullName,
+          "rider_phone": currentUserInfo.phone,
+          "pickup_address": pickup.placeName,
+          "destination_address": destination.placeName,
+          "location": pickupMap,
+          "destination": destinationMap,
+          "payment_method": "card",
+          "driver_id": "waiting",
 
-    };
+        };
 
-    rideRequestRef.set(rideMap);
-}
+        rideRequestRef.set(rideMap);
+      }
+      void cancelRequest() async {
+        rideRequestRef.remove();
+      }
+      void geofireListener(){
+        Geofire.initialize("driversAvaible");
+        Geofire.queryAtLocation(currentPosition.latitude, currentPosition.longitude, 20).listen((map) {
+          print(map);
+          if (map != null) {
+            var callBack = map['callBack'];
+            switch (callBack) {
+              case Geofire.onKeyEntered:
 
-  void cancelRequest() async {
-    rideRequestRef.remove();
-  }
+                NearbyDriver nearbyDriver = NearbyDriver();
+                nearbyDriver.key = map['key'];
+                nearbyDriver.latitude = map['latitude'];
+                nearbyDriver.longitude = map['longitude'];
+                print('nnn: ${nearbyDriver}');
+                FireHelper.nearbyDriverList.add(nearbyDriver);
 
-  resetApp(){
+                break;
+              case Geofire.onKeyExited:
 
-    setState(() {
+                FireHelper.removeFromList(map['key']);
 
-      polylineCoords.clear();
-      _polylines.clear();
-      _markers.clear();
-      _circles.clear();
-      rideDetailsHeight = 0;
-      requestContainerHeight=0;
-      searchContainerHeight = 340;
-      isOpen = false;
+                break;
+              case Geofire.onKeyMoved:
 
-    });
+                NearbyDriver nearbyDriver = NearbyDriver();
+                nearbyDriver.key = map['key'];
+                nearbyDriver.latitude = map['latitude'];
+                nearbyDriver.longitude = map['longitude'];
+                FireHelper.updateLocation(nearbyDriver);
 
-    setCurrentPosition();
+                break;
+              case Geofire.onGeoQueryReady:
+                print("XDDDDD");
+                print('length: ${FireHelper.nearbyDriverList.length}');
+              break;
+            }
+          }
+        });
+      }
+      resetApp(){
 
-  }
+        setState(() {
 
-}
+          polylineCoords.clear();
+          _polylines.clear();
+          _markers.clear();
+          _circles.clear();
+          rideDetailsHeight = 0;
+          requestContainerHeight=0;
+          searchContainerHeight = 340;
+          isOpen = false;
+
+        });
+
+        setCurrentPosition();
+
+      }
+      }

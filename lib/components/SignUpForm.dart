@@ -47,7 +47,7 @@ class _SignUpFormState extends State<SignUpForm> {
     );
     final User user = (
         await _auth.createUserWithEmailAndPassword(email: email, password: password).catchError((err){
-          PlatformException thisErr = err;
+          FirebaseAuthException thisErr = err;
           print('error: ${thisErr.message}');
         })).user;
 
