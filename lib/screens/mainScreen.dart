@@ -42,7 +42,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Set<Circle> _circles = {};
   Set<Marker> _markers = {};
 
+  BitmapDescriptor nearbyIcon;
+
   DatabaseReference rideRequestRef;
+
+  bool nearbyDriversLoad = false;
 
   void setCurrentPosition() async {
     Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -62,6 +66,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     });
   }
 
+  void createMarker(){
+    if(nearbyIcon == null){
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: Size(2,2));
+      BitmapDescriptor.fromAssetImage(imageConfiguration, "assets/images/car.png").then((icon){
+        nearbyIcon = icon;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +83,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    createMarker();
     return Scaffold(
       key: scaffoldKey,
       body: Stack(
@@ -594,12 +608,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 nearbyDriver.longitude = map['longitude'];
                 print('nnn: ${nearbyDriver}');
                 FireHelper.nearbyDriverList.add(nearbyDriver);
-
+                if(nearbyDriversLoad){
+                  updateDrivers();
+                }
                 break;
               case Geofire.onKeyExited:
-
                 FireHelper.removeFromList(map['key']);
-
+                updateDrivers();
                 break;
               case Geofire.onKeyMoved:
 
@@ -608,15 +623,37 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 nearbyDriver.latitude = map['latitude'];
                 nearbyDriver.longitude = map['longitude'];
                 FireHelper.updateLocation(nearbyDriver);
-
+                updateDrivers();
                 break;
               case Geofire.onGeoQueryReady:
-                print("XDDDDD");
-                print('length: ${FireHelper.nearbyDriverList.length}');
-              break;
+                nearbyDriversLoad = true;
+                updateDrivers();
+                break;
             }
           }
         });
+      }
+      void updateDrivers(){
+
+          setState(() {
+            _markers.clear();
+          });
+          Set<Marker> tempMarkers = Set<Marker>();
+
+          for(NearbyDriver driver in FireHelper.nearbyDriverList){
+            LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
+            print('driverPosition: ${driverPosition}');
+            Marker thisMarker = Marker(
+              markerId: MarkerId('drivers/${driver.key}'),
+              position: driverPosition,
+              icon: nearbyIcon,
+              rotation: HelperMethods.generateRandomNumber(360),
+            );
+            tempMarkers.add(thisMarker);
+          }
+          setState(() {
+            _markers = tempMarkers;
+          });
       }
       resetApp(){
 

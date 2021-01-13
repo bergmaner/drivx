@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:drivx/constants.dart';
 import 'package:drivx/helpers/requestHelper.dart';
@@ -60,6 +62,13 @@ class HelperMethods{
     double totalPrice = basePrice + distancePrice + timePrice;
 
     return totalPrice.truncate();
+  }
+  static double generateRandomNumber(int max){
+
+    var randomGenerator = Random();
+    int randInt = randomGenerator.nextInt(max);
+
+    return randInt.toDouble();
   }
   static void getCurrentUserInfo() async{
     String userId = currentUser.uid;
