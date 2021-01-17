@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>208461910166-ctmpdpcbv4ct83mrq2vkc12vmeob4nm0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.208461910166-ctmpdpcbv4ct83mrq2vkc12vmeob4nm0</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBXwNnIlA2i83rdz7vdq2il8Jc8hzBoVAU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>208461910166</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.drivx</string>
+	<key>PROJECT_ID</key>
+	<string>drivx-d9475</string>
+	<key>STORAGE_BUCKET</key>
+	<string>drivx-d9475.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:208461910166:ios:cb53e804d6d462cb29b2b7</string>
+	<key>DATABASE_URL</key>
+	<string>https://drivx-d9475-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

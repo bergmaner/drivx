@@ -54,7 +54,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition = new CameraPosition(target: pos, zoom:14);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    await HelperMethods.findCoordinateAddress(position, context);
     geofireListener();
+    print('pos: $pos');
   }
 
   void showDetailsContainer()async{
@@ -438,6 +440,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   Future<void> getDirection() async{
+    print("eeee");
     var pickup = Provider.of<AppData>(context, listen: false).pickupAddress;
     var destination = Provider.of<AppData>(context, listen: false).destinationAddress;
 
@@ -450,6 +453,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       builder: (BuildContext context) => ProgressDialog(status: "Please wait..."),
     );
 
+    print('pickupdest: $pickupLatLng, $destinationLatLng');
     var directionDetails = await HelperMethods.getDirectionDetails(pickupLatLng, destinationLatLng);
 
     setState(() {
@@ -564,6 +568,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         rideRequestRef = FirebaseDatabase.instance.reference().child("rideRequest").push();
         var pickup = Provider.of<AppData>(context, listen:false).pickupAddress;
         var destination = Provider.of<AppData>(context, listen:false).destinationAddress;
+        print('pickup ${pickup.placeAddress}');
 
         Map pickupMap = {
           "latitude": pickup.latitude.toString(),
@@ -579,7 +584,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           "created_at": DateTime.now().toString(),
           "rider_name": currentUserInfo.fullName,
           "rider_phone": currentUserInfo.phone,
-          "pickup_address": pickup.placeName,
+          "pickup_address": pickup.placeAddress,
           "destination_address": destination.placeName,
           "location": pickupMap,
           "destination": destinationMap,

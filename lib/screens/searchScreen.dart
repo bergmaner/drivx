@@ -56,6 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setFocus();
 
     String address =  Provider.of<AppData>(context)?.pickupAddress?.placeAddress ?? "";
+    print('address: $address');
     pickupController.text = address;
     return Scaffold(
       body:
